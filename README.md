@@ -1,6 +1,6 @@
 # Hire Me AI
 
-A conversational assistant that lets a recruiter ask questions about a candidate and get answers generated strictly from that candidate's actual resume — no guessing, no filler.
+A conversational assistant that lets a recruiter ask questions about me and get answers generated strictly from my actual resume — no guessing, no filler. This is a personal site: it always answers as one candidate, using one resume.
 
 ## How it works
 
@@ -65,4 +65,3 @@ Response: a streamed, plain-text answer.
 
 - [ ] Frontend (React / Next.js)
 - [ ] Deploy to a public URL
-- [ ] Support multiple candidate profiles

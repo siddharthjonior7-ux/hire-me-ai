@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+venv/
+.venv/
+
+# Real resume contains personal contact info (phone, email) —
+# keep it local/out of the public repo. Commit a sample instead if you
+# want the repo to be runnable out of the box.
+my_resume.pdf

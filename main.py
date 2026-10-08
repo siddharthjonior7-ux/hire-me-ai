@@ -18,6 +18,16 @@ client = Groq(
 model = "openai/gpt-oss-120b"
 app = FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],   # allows any website to ask questions
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 RESUME_PATH = Path("my_resume.pdf")
 
 # Parsed resume is cached after the first request so we don't

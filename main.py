@@ -29,6 +29,10 @@ app.add_middleware(
 
 
 RESUME_PATH = Path("my_resume.pdf")
+ABOUT_PATH = Path("more_about_me.pdf")
+_cached_about: str | None = None
+
+
 
 # Parsed resume is cached after the first request so we don't
 # re-read the PDF and re-call the LLM parser on every chat message.
@@ -69,6 +73,12 @@ def get_resume() -> Resume:
         _cached_resume = parse_resume(resume_text)
     return _cached_resume
 
+def get_about() -> str:
+    global _cached_about
+    if _cached_about is None:
+        _cached_about = read_pdf(ABOUT_PATH) if ABOUT_PATH.exists() else ""
+    return _cached_about
+
 
 def ask_candidate_stream(question: str, resume: Resume):
     """Yields the answer text token-by-token as it streams back from Groq."""
@@ -79,6 +89,10 @@ You are an AI assistant representing a job candidate.
 Below is everything you know about the candidate.
 
 {resume.model_dump_json(indent=2)}
+
+Extra personal details (school, age, hobbies, etc.):
+{get_about()}
+
 
 Rules:
 

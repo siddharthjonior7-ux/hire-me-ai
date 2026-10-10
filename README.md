@@ -1,67 +1,83 @@
-# Hire Me AI
+Hire Me AI 🎤📄
+Don't read the resume. Interview it.
 
-A conversational assistant that lets a recruiter ask questions about me and get answers generated strictly from my actual resume — no guessing, no filler. This is a personal site: it always answers as one candidate, using one resume.
+Hire Me AI turns a resume into a chatbot. Recruiters type a question — "What are his projects?", "What's his strongest tech stack?", "What are his hobbies?" — and get the answer streamed live, written straight from the resume PDF (plus an extra file for school, hobbies and other personal details).
 
-## How it works
+Live site: https://answer-my-cv.lovable.app
+Backend (API): https://hire-me-ai-cwzj.onrender.com
+How it works
+Recruiter asks a question
+        │
+        ▼
+ Frontend (Lovable)  ──POST /chat {"question": "..."}──▶  Backend (FastAPI on Render)
+                                                                │
+                                                reads my_resume.pdf + more_about_me.pdf
+                                                (parsed once, then cached)
+                                                                │
+                                                asks Groq's LLM to answer using ONLY the resume
+                                                                │
+        ◀──────── answer streams back as plain text ────────────┘
+The PDFs are parsed once and cached, so every question after the first is fast.
+The answer streams in word-by-word (the frontend reads it with a ReadableStream, not EventSource).
+Nothing is stored — each question is answered fresh from the PDFs.
+Project structure
+hire-me-ai/
+├── main.py                  # FastAPI backend: parses PDFs, calls Groq, streams answers
+├── requirements.txt         # Python dependencies
+├── my_resume.pdf            # The resume (projects, skills, experience)
+├── more_about_me.pdf        # Extra details: school, age, hobbies
+├── Hire-Me-AI-Setup-Guide.md / .pdf   # Step-by-step guide to make your own copy
+└── README.md
+Tech stack
+Part	What	Where it runs
+Backend	Python, FastAPI, Groq (openai/gpt-oss-120b), pypdf	Render (free tier)
+Frontend	React + TanStack Start, Tailwind CSS	Lovable
+LLM	Groq free API	groq.com
+API
+POST /chat
+Ask a question about the resume.
 
-1. The candidate's resume (PDF) is parsed once into structured JSON — name, skills, experience, education, projects, certifications — using the Groq API with a Pydantic schema.
-2. A recruiter sends a question to `POST /chat`.
-3. The LLM answers using only the parsed resume content, and the answer is streamed back token-by-token.
+Request:
 
-## Tech stack
+{ "question": "what are siddharth's projects?" }
+Response: plain text, streamed chunk-by-chunk (not JSON).
 
-- FastAPI
-- Groq API (`openai/gpt-oss-120b`)
-- Pydantic
-- pypdf
+Example:
 
-## Project status
-
-- ✅ **Phase 1 — Backend:** resume parsing + streaming Q&A API
-- 🚧 **Phase 2 — Frontend + deployment:** in progress
-
-## Setup
-
-```bash
-git clone <this-repo-url>
+curl -X POST https://hire-me-ai-cwzj.onrender.com/chat \
+  -H "Content-Type: application/json" \
+  -d '{"question": "what are his projects?"}'
+Run it locally
+Install Python 3.10+
+Clone this repo:
+git clone https://github.com/siddharthjonior7-ux/hire-me-ai
 cd hire-me-ai
-python -m venv venv
-source venv/bin/activate   # venv\Scripts\activate on Windows
+Install dependencies:
 pip install -r requirements.txt
-```
-
-Create a `.env` file in the project root:
-
-```
+Create a .env file with your free Groq key (get one at https://console.groq.com):
 GROQ_API_KEY=your_key_here
-```
+⚠️ Never commit .env to GitHub — the repo's .gitignore already blocks it.
+Start the server:
+uvicorn main:app --reload
+Deploy your own (Render — free)
+Full click-by-click guide: see Hire-Me-AI-Setup-Guide.md. Short version:
 
-Place a resume PDF in the project root named `my_resume.pdf`.
+Push this repo to your own GitHub.
+On render.com → New → Web Service → connect the repo.
+Settings:
+Runtime: Python 3
+Build Command: pip install -r requirements.txt
+Start Command: uvicorn main:app --host 0.0.0.0 --port $PORT
+Environment → add GROQ_API_KEY (never put it in GitHub).
+Deploy → copy your URL.
+Make it for someone else
+Each person gets their own full copy: their own GitHub repo, their own free Groq key, their own Render service, and their own site link. The setup guide walks through every click.
 
-Run the server:
-
-```bash
-python main.py
-```
-
-The API will be available at `http://127.0.0.1:8000`.
-
-## API reference
-
-### `GET /`
-Health check.
-
-### `POST /chat`
-
-Request body:
-
-```json
-{ "question": "What experience does the candidate have with cloud platforms?" }
-```
-
-Response: a streamed, plain-text answer.
-
-## Roadmap
-
-- [ ] Frontend (React / Next.js)
-- [ ] Deploy to a public URL
+Common problems
+Problem	Fix
+Internal Server Error on first question	Check GROQ_API_KEY is set in Render → Environment, and both PDFs are in the repo with exact names
+First answer takes ~30 seconds	Normal — Render's free tier sleeps after 15 quiet minutes; the first question wakes it up
+Answers only cover projects/skills, not hobbies	more_about_me.pdf is missing from the repo — upload it and redeploy
+Browser blocks the answers (CORS)	Make sure the CORSMiddleware block is in main.py
+Credits
+Built with Lovable, FastAPI and Groq.

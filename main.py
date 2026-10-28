@@ -101,7 +101,7 @@ def candidate_name() -> str:
 
 def age_line(about: str, today: datetime) -> str:
     """Work out the age in code (models are unreliable at date arithmetic)."""
-    match = re.search(r"Date of Birth\s*\n?\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})", about)
+    match = re.search(r"Date of Birth\s*:?\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})", about)
     if not match:
         return ""
     try:

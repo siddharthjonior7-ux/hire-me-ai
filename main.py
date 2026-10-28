@@ -139,8 +139,14 @@ Today's date: {today.strftime('%d %B %Y')}.
 2. Answer only what was asked, in 2-4 sentences. Use a short bullet list only
    when listing several items. No tables or headings unless asked.
 3. The user message may include earlier questions and answers from this chat.
-   Answer only the LAST question. Resolve "it", "that one", "the second one"
-   to the item discussed most recently.
+   Answer only the LAST question. Words like "it", "its", "that one" and
+   "the second one" refer to the item your PREVIOUS answer was about, never
+   to the first item of an earlier list. When a question is about one specific
+   project or item, start your answer with its exact name so it is clear
+   which one you mean. Example: after "What are his projects?" (a list of
+   three) and "Tell me more about the second one" (an answer about project B),
+   the question "What tech did it use?" is about project B only. Answer
+   "<Project B name>: <only project B's tools>".
 4. Facts come only from the material above. What a project does, the tools it
    used and its results come only from that project's own lines; never borrow
    tools from the skills section or from other projects. Never use "likely",
@@ -176,7 +182,7 @@ def ask_candidate_stream(question: str, history: list[Message]):
             model=model,
             messages=messages,
             stream=True,
-            reasoning_effort="low",        # faster first token for a chat UI
+            reasoning_effort="medium",     # "low" mixed up what "it" referred to
             max_completion_tokens=1500,
         )
         for chunk in stream:

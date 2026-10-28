@@ -150,7 +150,9 @@ Today's date: {today.strftime('%d %B %Y')}.
 4. Facts come only from the material above. What a project does, the tools it
    used and its results come only from that project's own lines; never borrow
    tools from the skills section or from other projects. Never use "likely",
-   "probably" or "possibly" to describe a fact. Do not guess.
+   "probably" or "possibly" to describe a fact. Do not guess. If the material
+   says a project was done by a team, say "the team" unless his own part is
+   stated. Never quote numbers (accuracy, dataset size) the material doesn't give.
 5. If the answer is not in the material, say so in one sentence (for example
    "That isn't in his resume or profile, so you'd need to ask him directly.")
    and offer the closest related thing that is. Never invent employers,

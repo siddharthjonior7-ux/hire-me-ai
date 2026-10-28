@@ -4,3 +4,4 @@ groq
 pydantic
 pypdf
 python-dotenv
+python-docx

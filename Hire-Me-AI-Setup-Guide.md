@@ -11,7 +11,7 @@ Follow the parts in order. Do not skip steps.
 1. A laptop (Windows, Mac, anything).
 2. Two PDF files ready on your computer:
    - `my_resume.pdf` — your resume (projects, skills, experience).
-   - `more_about_me.pdf` — extra stuff: school, age, hobbies.
+   - `more_about_me.docx` — extra stuff: school, age, hobbies.
    - The names must match **exactly**, including capital letters.
 3. Free accounts on 4 websites (you will make them as you go):
    - [github.com](https://github.com) — stores the code
@@ -32,7 +32,7 @@ Follow the parts in order. Do not skip steps.
 6. Repository name: `hire-me-ai`. Choose **Public**. Click **Create repository**.
 7. On the new empty repo page, click the link **"uploading an existing file"**.
 8. Drag in **all the files from the unzipped folder** (all code files, `requirements.txt`, etc.). Click **Commit changes**.
-9. Now add your two PDFs: click **Add file → Upload files**, drag in `my_resume.pdf` and `more_about_me.pdf`, click **Commit changes**.
+9. Now add your two files: click **Add file → Upload files**, drag in `my_resume.pdf` and `more_about_me.docx`, click **Commit changes**.
 10. Check the file list at the top of your repo. Look for a file called `.gitignore` (starts with a dot).
     - If you see `gitignore` **without** the dot instead: click it, click the ✏️ **pencil icon**, change the file name to `.gitignore`, click **Commit changes**.
     - This file stops your secret key from ever being uploaded to GitHub.
@@ -116,7 +116,7 @@ I will give you my backend URL next.
 | Problem | Fix |
 |---|---|
 | Answer says `Internal Server Error` | Check step 9 of Part 3 (Groq key added in Render **Environment**, not GitHub) and that **both PDFs** are in your GitHub repo. Then **Manual Deploy → Deploy latest commit**. |
-| Answer says `I don't have enough information` about school/hobbies | `more_about_me.pdf` is missing from GitHub, or was uploaded with a different name. |
+| Answer says `I don't have enough information` about school/hobbies | `more_about_me.docx` is missing from GitHub, or was uploaded with a different name. |
 | First question after a break is slow (~30s) | Normal. Render's free plan sleeps after 15 quiet minutes. It wakes up on its own. |
 | Nothing shows up at all in the browser | The backend's `main.py` needs the CORS lines (allowing other sites to read its answers). Make sure you copied the latest code from the original repo. |
 | Wrong answers / talks about someone else's projects | The PDFs in **your** repo are not yours, or the name doesn't match exactly. |
@@ -126,7 +126,7 @@ I will give you my backend URL next.
 ## Quick checklist
 
 - [ ] Code uploaded to my own GitHub repo
-- [ ] `my_resume.pdf` and `more_about_me.pdf` in the repo (exact names)
+- [ ] `my_resume.pdf` and `more_about_me.docx` in the repo (exact names)
 - [ ] `.gitignore` has the dot at the start
 - [ ] Groq key created and saved somewhere safe
 - [ ] Render service says **Live**

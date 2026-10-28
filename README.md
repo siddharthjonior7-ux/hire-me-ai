@@ -18,7 +18,7 @@ Recruiter asks a question
         ▼
  Frontend (Lovable)  ──POST /chat {"question": "..."}──▶  Backend (FastAPI on Render)
                                                                 │
-                                                reads my_resume.pdf + more_about_me.pdf
+                                                reads my_resume.pdf + more_about_me.docx
                                                 (parsed once, then cached)
                                                                 │
                                                 asks Groq's LLM to answer using ONLY the resume
@@ -37,7 +37,7 @@ hire-me-ai/
 ├── main.py                  # FastAPI backend: parses PDFs, calls Groq, streams answers
 ├── requirements.txt         # Python dependencies
 ├── my_resume.pdf            # The resume (projects, skills, experience)
-├── more_about_me.pdf        # Extra details: school, age, hobbies
+├── more_about_me.docx       # Extra details: school, age, hobbies (one file; .pdf/.md/.txt also work)
 ├── Hire-Me-AI-Setup-Guide.md / .pdf   # Step-by-step guide to make your own copy
 └── README.md
 ```
@@ -115,7 +115,7 @@ Each person gets their own full copy: their own GitHub repo, their own free Groq
 | --- | --- |
 | `Internal Server Error` on first question | Check `GROQ_API_KEY` is set in Render → Environment, and both PDFs are in the repo with exact names |
 | First answer takes ~30 seconds | Normal — Render's free tier sleeps after 15 quiet minutes; the first question wakes it up |
-| Answers only cover projects/skills, not hobbies | `more_about_me.pdf` is missing from the repo — upload it and redeploy |
+| Answers only cover projects/skills, not hobbies | `more_about_me.docx` is missing from the repo — upload it and redeploy |
 | Browser blocks the answers (CORS) | Make sure the `CORSMiddleware` block is in `main.py` |
 
 ## Credits

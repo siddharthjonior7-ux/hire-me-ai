@@ -32,7 +32,10 @@ app.add_middleware(
 # To reuse this project, replace these two files with your own.
 # ---------------------------------------------------------------------------
 RESUME_PATH = Path("my_resume.pdf")      # always a PDF
-ABOUT_PATH = Path("more_about_me.pdf")   # school, age, hobbies, interview answers
+# school, age, hobbies, interview answers. Use ONE file: more_about_me.docx
+# (or .pdf, .md or .txt: the first one found, in that order, is used).
+ABOUT_BASENAME = "more_about_me"
+ABOUT_EXTENSIONS = (".docx", ".pdf", ".md", ".txt")
 
 # Limits, so a stranger can't run up your Groq bill.
 # NOTE: MAX_QUESTION_CHARS is generous on purpose: if the frontend packs earlier
@@ -74,6 +77,31 @@ def read_pdf(file_path: Path) -> str:
     return re.sub(r"[\x00-\x08\x0b-\x1f\x7f]", " ", text)
 
 
+def read_docx(file_path: Path) -> str:
+    from docx import Document  # imported here so PDF-only users don't need it
+
+    doc = Document(file_path)
+    lines = [p.text for p in doc.paragraphs]
+    for table in doc.tables:
+        for row in table.rows:
+            lines.append(" | ".join(cell.text.strip() for cell in row.cells))
+    return "\n".join(lines)
+
+
+def read_about_file() -> str:
+    """Read the 'more about me' file, whichever supported format it is in."""
+    for ext in ABOUT_EXTENSIONS:
+        path = Path(ABOUT_BASENAME + ext)
+        if not path.exists():
+            continue
+        if ext == ".docx":
+            return read_docx(path)
+        if ext == ".pdf":
+            return read_pdf(path)
+        return path.read_text(encoding="utf-8")
+    return ""
+
+
 def get_resume_text() -> str:
     """The resume as plain text. We pass it to the model as-is (no LLM
     'parsing' step), so no detail, like a project's bullet points, gets lost."""
@@ -84,7 +112,7 @@ def get_resume_text() -> str:
 
 def get_about_text() -> str:
     if "about" not in _cache:
-        text = read_pdf(ABOUT_PATH) if ABOUT_PATH.exists() else ""
+        text = read_about_file()
         # Drop blank "fill-in" lines such as ______ so they aren't read as answers.
         lines = [ln for ln in text.splitlines() if not re.fullmatch(r"[\s_\-–—.]{6,}", ln)]
         _cache["about"] = "\n".join(lines).strip()
